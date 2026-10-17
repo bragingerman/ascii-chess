@@ -55,6 +55,10 @@ The app is served under the base path `/ascii-chess/` (`vite.config.ts`, `PREFIX
 
 The GitHub Action in `.github/workflows/deploy.yml` deploys on every push to `main` when the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set.
 
+## Built with AI
+
+The online version (rooms, matchmaking, server-side rules and clocks), the Stockfish bot integration, the one-screen mobile layout and the Cloudflare deployment were written with [Claude Code](https://claude.com/claude-code); the project's agent instructions are in [`CLAUDE.md`](CLAUDE.md) and [`AGENTS.md`](AGENTS.md).
+
 ## Credits
 
 - Original concept and design: [azykowww.com](https://azykowww.com)
