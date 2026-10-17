@@ -804,8 +804,10 @@ export default function App() {
           const isPending = same(pending, pos)
           const key = `${r}-${c}`
           const fogged = fogOn && !visible.has(key)
-          // Hide every hint of the AI's activity inside the fog.
-          const hide = fogged && turn === opp
+          // Hide every hint of the AI's activity inside the fog: its cursor, its piece, and the dots / dimming
+          // of its possible moves whenever the piece it picked stands on a square we can't see.
+          const hideAi = turn === opp && !!selected && fogOn && !visible.has(`${selected.row}-${selected.col}`)
+          const hide = (fogged && turn === opp) || hideAi
           const real = isPending && selected ? board[selected.row][selected.col] : same(pending ? selected : null, pos) ? null : piece
           const shown = fogged && real?.color !== me ? null : real
           const ready = !selected && !over && movable.has(key) && !hide
@@ -821,16 +823,16 @@ export default function App() {
               className={`relative ${mobile ? "size-[36px]" : "size-[80px]"} cursor-pointer ${booming ? "z-20" : ""} border-0 p-0 outline-none ${dark ? "bg-[#1c1c1c]" : "bg-[#232323]"}`}
             >
               <span className={`absolute left-0 top-0 size-[80px] ${mobile ? "origin-top-left scale-[0.45]" : ""} ${same(selected, pos) && !hide ? "shadow-[inset_0_0_0_2px_#fff]" : ""}`}>
-                <span className={`absolute inset-0 ${selected && !fogged && !isTarget && !same(selected, pos) ? "opacity-40" : ""}`}>
+                <span className={`absolute inset-0 ${selected && !hideAi && !fogged && !isTarget && !same(selected, pos) ? "opacity-40" : ""}`}>
                   {fogged ? <Fog dark={dark} /> : <Cell piece={shown} dark={dark} />}
                 </span>
                 {ready && (
                   <span className="-translate-x-1/2 -translate-y-1/2 pointer-events-none absolute border border-[#666] border-solid h-[80px] left-[calc(50%+0.5px)] top-1/2 w-[75px] animate-pulse" />
                 )}
-                {same(cursor, pos) && <span className="pointer-events-none absolute inset-[2px] border border-white/30" />}
+                {same(cursor, pos) && !(fogged && turn === opp) && <span className="pointer-events-none absolute inset-[2px] border border-white/30" />}
                 {booming && <Annihilation key={boom.id} piece={boom.piece} dark={dark} text={boom.text} word={boom.word} />}
                 {isTarget && !isPending && !hide && (
-                  <span className={`pointer-events-none absolute ${piece ? "inset-0 shadow-[inset_0_0_0_2px_#fff]" : "left-1/2 top-1/2 size-[10px] -translate-x-1/2 -translate-y-1/2 bg-white"}`} />
+                  <span className={`pointer-events-none absolute ${piece && !fogged ? "inset-0 shadow-[inset_0_0_0_2px_#fff]" : "left-1/2 top-1/2 size-[10px] -translate-x-1/2 -translate-y-1/2 bg-white"}`} />
                 )}
                 {isPending && !hide && (
                   <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_0_3px_#fff] font-['IBM_Plex_Mono:Bold'] text-[10px] text-white">
