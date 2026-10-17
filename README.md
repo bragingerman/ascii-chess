@@ -16,7 +16,7 @@
 - **Robot opponent**: Stockfish (WebAssembly, runs in your browser) with **Easy / Medium / Hard** levels.
 - **War fog** mode: you only see the squares near your own pieces.
 - **Chess clocks** (3 / 5 / 10 min), draw offers, resign, rematch with colour swap.
-- **Reconnect** to a game after closing the tab or losing the connection; a player who stays away for 3 minutes forfeits.
+- **Reconnect** to a game after closing the tab or losing the connection; a player who stays away for 5 minutes forfeits.
 - **Mobile friendly**, keyboard controls (arrows + Enter), sound effects, capture animations.
 - The server is authoritative: it validates every move, runs the clocks and, under war fog, never sends you the pieces you can't see.
 
@@ -32,6 +32,10 @@ src/engine.ts     Stockfish wrapper (Web Worker, UCI, difficulty levels)
 src/useRoom.ts    WebSocket client for rooms and matchmaking
 worker/index.ts   Worker + Room and Lobby Durable Objects
 ```
+
+## Settings
+
+Game settings live in one file, [src/config.ts](src/config.ts): forfeit time for abandoned games, room lifetime, clock choices, robot strength per level, robot pacing, war fog range, room code length and when matchmaking offers the robot. It is shared by the browser and the Worker, so deploy after changing it.
 
 ## Run it
 

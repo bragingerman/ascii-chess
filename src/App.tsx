@@ -5,6 +5,7 @@ import {
   type Board, type Color, type Kind, type Move, type Piece, type Position, type Square,
 } from "./rules"
 import { BASE, codeFromPath, findOpponent, newCode, roomPath, roomUrl, useRoom, type Room } from "./useRoom"
+import { CONFIG } from "./config"
 import { engineMove, stopEngine, type Level } from "./engine"
 import type { Reason, Settings } from "./protocol"
 
@@ -456,8 +457,8 @@ export default function App() {
   const [sound, setSound] = useState(true)
   const first = useRef(true)
   const [modal, setModal] = useState<"start" | "settings" | "lobby" | "end" | null>(() => (codeFromPath() ? null : "start"))
-  const [level, setLevel] = useState<Level>("medium")
-  const [draft, setDraft] = useState<{ fog: boolean; sound: boolean; level: Level }>({ fog: false, sound: true, level: "medium" })
+  const [level, setLevel] = useState<Level>(CONFIG.defaultRobotLevel)
+  const [draft, setDraft] = useState<{ fog: boolean; sound: boolean; level: Level }>({ fog: false, sound: true, level: CONFIG.defaultRobotLevel })
   const [boom, setBoom] = useState<{ row: number; col: number; id: number; piece: Piece; text: string; word: string } | null>(null)
   const panel = useRef<HTMLDivElement>(null)
 
@@ -709,10 +710,10 @@ export default function App() {
           window.setTimeout(() => {
             setPending(m.to)
             sfx.preview()
-          }, 700),
+          }, CONFIG.robotPacing.previewDelayMs),
         )
-        timers.push(window.setTimeout(() => play(m), 1400))
-      }, 350),
+        timers.push(window.setTimeout(() => play(m), CONFIG.robotPacing.moveDelayMs))
+      }, CONFIG.robotPacing.thinkDelayMs),
     )
     return () => {
       cancelled = true
@@ -1018,10 +1019,10 @@ export default function App() {
           title="LOOKING FOR A HUMAN..."
           action="CANCEL"
           onAction={stopSearch}
-          secondary={searchSecs >= 20 ? { label: "PLAY THE ROBOT", onClick: playRobotInstead } : undefined}
+          secondary={searchSecs >= CONFIG.robotOfferAfterSeconds ? { label: "PLAY THE ROBOT", onClick: playRobotInstead } : undefined}
         >
           <p className={`w-full font-['IBM_Plex_Mono:Regular'] leading-[normal] text-white opacity-70 ${isMobile ? "text-[14px]" : "text-[16px]"}`}>
-            {`${searching.fog ? "WAR FOG ON" : "WAR FOG OFF"} / ${searching.minutes ? `${searching.minutes} MIN` : "NO CLOCK"}. Same settings only.${searchSecs >= 20 ? " Nobody around yet: keep waiting or play the robot." : ""}`}
+            {`${searching.fog ? "WAR FOG ON" : "WAR FOG OFF"} / ${searching.minutes ? `${searching.minutes} MIN` : "NO CLOCK"}. Same settings only.${searchSecs >= CONFIG.robotOfferAfterSeconds ? " Nobody around yet: keep waiting or play the robot." : ""}`}
           </p>
         </Modal>
       )}
@@ -1037,7 +1038,7 @@ export default function App() {
         >
           <div className={`flex w-full flex-col leading-[normal] text-white ${isMobile ? "gap-[16px] text-[16px]" : "gap-[24px] text-[24px]"}`}>
             {([
-              ["| CLOCK", lobby.minutes, (x: number) => setLobby((l) => ({ ...l, minutes: x })), [[0, "OFF"], [3, "3M"], [5, "5M"], [10, "10M"]]],
+              ["| CLOCK", lobby.minutes, (x: number) => setLobby((l) => ({ ...l, minutes: x })), CONFIG.clockMinutes.map((m) => [m, m ? `${m}M` : "OFF"] as const)],
               ["| WAR FOG", draft.fog ? 1 : 0, (x: number) => setDraft((d) => ({ ...d, fog: x === 1 })), [[1, "ON"], [0, "OFF"]]],
             ] as const).map(([label, cur, set, opts]) => (
               <div className="flex flex-col gap-[8px]" key={label}>
@@ -1156,7 +1157,7 @@ export default function App() {
             <div className={`flex w-full flex-col gap-[8px] leading-[normal] text-white ${isMobile ? "text-[16px]" : "text-[24px]"}`}>
               <p className="font-['IBM_Plex_Mono:Bold']">| ROBOT LEVEL</p>
               <div className="flex gap-[16px] font-['IBM_Plex_Mono:Regular']">
-                {(["easy", "medium", "hard"] as const).map((l) => (
+                {(Object.keys(CONFIG.robotLevels) as Level[]).map((l) => (
                   <button
                     key={l}
                     onClick={() => {

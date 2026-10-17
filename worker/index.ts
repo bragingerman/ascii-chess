@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers"
 import type { ClientMsg, FindMsg, LastMove, MatchMsg, Result, ServerMsg, Settings, View } from "../src/protocol"
+import { CONFIG, randomCode } from "../src/config"
 import { allMoves, apply, initialBoard, inCheck, legalFrom, sq, visibleSquares, type Board, type Color, type Position } from "../src/rules"
 
 interface Env {
@@ -9,9 +10,9 @@ interface Env {
 }
 
 const CODE = /^[A-Z0-9]{4,8}$/
-const IDLE_MS = 24 * 60 * 60 * 1000
+const IDLE_MS = CONFIG.roomIdleHours * 60 * 60 * 1000
 // A player who stays disconnected this long while the opponent is still there loses the game.
-const ABANDON_MS = 3 * 60 * 1000
+const ABANDON_MS = CONFIG.abandonAfterMinutes * 60 * 1000
 
 // The game is served from https://germanbragin.com/ascii-chess/ (a route on that zone) and,
 // for convenience, from the workers.dev address. Everything under PREFIX is ours; on the
@@ -103,7 +104,7 @@ export class Room extends DurableObject<Env> {
   }
 
   private fresh(code: string, settings: Settings, white: string | null): Stored {
-    const minutes = [0, 3, 5, 10].includes(settings.minutes) ? settings.minutes : 0
+    const minutes = CONFIG.clockMinutes.includes(settings.minutes) ? settings.minutes : 0
     return {
       code,
       settings: { fog: !!settings.fog, minutes },
@@ -370,8 +371,6 @@ export class Room extends DurableObject<Env> {
   }
 }
 
-const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-const newCode = () => Array.from(crypto.getRandomValues(new Uint8Array(5)), (b) => ALPHABET[b % ALPHABET.length]).join("")
 
 /**
  * Global matchmaking queue. A searching browser holds a socket here; when two sockets with the same
@@ -398,7 +397,7 @@ export class Lobby extends DurableObject<Env> {
       return
     }
     if (msg.t !== "find") return
-    const minutes = [0, 3, 5, 10].includes(msg.settings?.minutes) ? msg.settings.minutes : 0
+    const minutes = CONFIG.clockMinutes.includes(msg.settings?.minutes) ? msg.settings.minutes : 0
     const settings: Settings = { fog: !!msg.settings?.fog, minutes }
     const key = `${settings.fog ? 1 : 0}-${minutes}`
 
@@ -411,7 +410,7 @@ export class Lobby extends DurableObject<Env> {
     }
 
     for (let i = 0; i < 5; i++) {
-      const code = newCode()
+      const code = randomCode()
       if (await this.env.ROOM.get(this.env.ROOM.idFromName(code)).prepare(code, settings)) {
         other.serializeAttachment({ key: null })
         this.send(other, { t: "matched", code })

@@ -1,6 +1,8 @@
 // Pure chess rules, shared by the browser (AI + UI) and the Cloudflare Worker (online rooms).
 // No castling, en passant or under-promotion: pawns always promote to a queen.
 
+import { CONFIG } from "./config.ts"
+
 export type Color = "white" | "black"
 export type Kind = "rook" | "knight" | "bishop" | "queen" | "king" | "pawn"
 export type Piece = { color: Color; kind: Kind }
@@ -105,7 +107,7 @@ export function visibleSquares(board: Board, color: Color) {
   board.forEach((row, r) =>
     row.forEach((p, c) => {
       if (p?.color !== color) return
-      const range = p.kind === "queen" || p.kind === "king" || p.kind === "rook" ? 3 : 1
+      const range = p.kind === "queen" || p.kind === "king" || p.kind === "rook" ? CONFIG.fogRange.queenKingRook : CONFIG.fogRange.others
       for (let dr = -range; dr <= range; dr++)
         for (let dc = -range; dc <= range; dc++) if (inside(r + dr, c + dc)) set.add(`${r + dr}-${c + dc}`)
     }),

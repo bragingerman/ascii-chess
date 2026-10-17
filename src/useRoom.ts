@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { randomCode } from "./config"
 import type { ClientMsg, MatchMsg, ServerMsg, Settings, View } from "./protocol"
 
-// Unambiguous characters only (no 0/O, 1/I).
-const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-
-export const newCode = () =>
-  Array.from(crypto.getRandomValues(new Uint8Array(5)), (b) => ALPHABET[b % ALPHABET.length]).join("")
+export const newCode = randomCode
 
 // The app lives under a base path in production (/ascii-chess/) and at the root in `vite dev`.
 export const BASE = import.meta.env.BASE_URL

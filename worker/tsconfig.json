@@ -1,5 +1,5 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": { "types": ["@cloudflare/workers-types"], "lib": ["ES2022"] },
-  "include": ["./*.ts", "../src/rules.ts", "../src/protocol.ts"]
+  "include": ["./*.ts", "../src/rules.ts", "../src/config.ts", "../src/protocol.ts"]
 }

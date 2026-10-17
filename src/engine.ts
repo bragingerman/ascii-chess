@@ -1,15 +1,11 @@
 // The robot's brain: Stockfish (lite, single-threaded WASM) in a Web Worker.
+import { CONFIG, type RobotLevel } from "./config.ts"
 import type { Board, Color, Move } from "./rules.ts"
 import { legalUci, toFen } from "./uci.ts"
 
-export type Level = "easy" | "medium" | "hard"
+export type Level = RobotLevel
 
-// Skill Level 0..20 weakens play by deliberate mistakes; UCI_Elo (1320+) limits strength more smoothly.
-const LEVELS: Record<Level, { options: [string, string][]; movetime: number }> = {
-  easy: { options: [["UCI_LimitStrength", "false"], ["Skill Level", "0"]], movetime: 120 },
-  medium: { options: [["Skill Level", "20"], ["UCI_LimitStrength", "true"], ["UCI_Elo", "1500"]], movetime: 400 },
-  hard: { options: [["Skill Level", "20"], ["UCI_LimitStrength", "true"], ["UCI_Elo", "2100"]], movetime: 900 },
-}
+const LEVELS = CONFIG.robotLevels
 
 let worker: Worker | null = null
 let ready: Promise<void> | null = null
