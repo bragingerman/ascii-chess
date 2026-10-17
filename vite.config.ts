@@ -21,7 +21,8 @@ export default defineConfig(({ mode, command }) => {
     plugins: [
 react(),
       tailwindcss(),
-      figmaSiteConfiguration(siteConfiguration),
+      // Google Analytics and Yandex Metrica only in production builds, so local development doesn't pollute the stats.
+      figmaSiteConfiguration(command === 'build' ? siteConfiguration : { ...siteConfiguration, analytics: undefined, customScripts: undefined }),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
       figmaMakeKitPlugin({ storiesGlob: '/src/**/*.stories.{ts,tsx,js,jsx}' }),

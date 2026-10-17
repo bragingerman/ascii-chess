@@ -16,7 +16,7 @@
 - **Robot opponent**: Stockfish (WebAssembly, runs in your browser) with **Easy / Medium / Hard** levels.
 - **War fog** mode: you only see the squares near your own pieces.
 - **Chess clocks** (3 / 5 / 10 min), draw offers, resign, rematch with colour swap.
-- **Reconnect** to a game after closing the tab or losing the connection.
+- **Reconnect** to a game after closing the tab or losing the connection; a player who stays away for 3 minutes forfeits.
 - **Mobile friendly**, keyboard controls (arrows + Enter), sound effects, capture animations.
 - The server is authoritative: it validates every move, runs the clocks and, under war fog, never sends you the pieces you can't see.
 
@@ -63,6 +63,7 @@ The online version (rooms, matchmaking, server-side rules and clocks), the Stock
 
 - Original concept and design: [azykowww.com](https://azykowww.com)
 - Online version, bot engine, improvements: [germanbragin.com](https://germanbragin.com)
+- Font: [IBM Plex Mono](https://github.com/IBM/plex) (SIL Open Font License 1.1), self-hosted
 - Chess engine: [Stockfish](https://stockfishchess.org/) via [stockfish.js](https://github.com/nmrugg/stockfish.js) (GPL-3.0)
 
 ## License

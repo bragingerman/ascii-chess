@@ -322,6 +322,7 @@ function endText(r: { winner: Color | null; reason: Reason } | null) {
     case "resign": return `Resigned, ${side} wins`
     case "timeout": return `Time out, ${side} wins`
     case "agreed": return "Draw agreed"
+    case "abandoned": return `Left the game, ${side} wins`
   }
 }
 
@@ -655,6 +656,24 @@ export default function App() {
       },
     )
   }
+  // Waiting alone for a while: offer the robot instead (the queue search is dropped when it is taken).
+  const [searchSecs, setSearchSecs] = useState(0)
+  useEffect(() => {
+    if (!searching) {
+      setSearchSecs(0)
+      return
+    }
+    const id = window.setInterval(() => setSearchSecs((s) => s + 1), 1000)
+    return () => window.clearInterval(id)
+  }, [searching])
+  const playRobotInstead = () => {
+    cancelSearch.current?.()
+    cancelSearch.current = null
+    setFog(searching?.fog ?? false)
+    setLevel(draft.level)
+    setSearching(null)
+    reset()
+  }
   const stopSearch = () => {
     cancelSearch.current?.()
     cancelSearch.current = null
@@ -866,6 +885,13 @@ export default function App() {
   return (
     <div className={`flex h-[100dvh] w-full flex-col overflow-hidden ${isMobile ? "bg-[#070707]" : "bg-black"}`}>
     <main className="flex min-h-0 w-full flex-1 items-center justify-center overflow-hidden p-2">
+      <div className="sr-only">
+        <h1>ASCII Chess: play chess online in ASCII art</h1>
+        <p>
+          Free chess in your browser with an ASCII-art interface. Play against the Stockfish robot on three levels, challenge a friend with a link,
+          or get matched with a random opponent. Optional war fog hides everything you can't see, and chess clocks are available online.
+        </p>
+      </div>
       {isMobile ? (
         <div className="relative flex w-[364px] flex-col items-center gap-[12px]" style={{ zoom: scale }}>
           <div className="flex w-full items-start">{boardGrid(true)}</div>
@@ -992,9 +1018,10 @@ export default function App() {
           title="LOOKING FOR A HUMAN..."
           action="CANCEL"
           onAction={stopSearch}
+          secondary={searchSecs >= 20 ? { label: "PLAY THE ROBOT", onClick: playRobotInstead } : undefined}
         >
           <p className={`w-full font-['IBM_Plex_Mono:Regular'] leading-[normal] text-white opacity-70 ${isMobile ? "text-[14px]" : "text-[16px]"}`}>
-            {`${searching.fog ? "WAR FOG ON" : "WAR FOG OFF"} / ${searching.minutes ? `${searching.minutes} MIN` : "NO CLOCK"}. Same settings only.`}
+            {`${searching.fog ? "WAR FOG ON" : "WAR FOG OFF"} / ${searching.minutes ? `${searching.minutes} MIN` : "NO CLOCK"}. Same settings only.${searchSecs >= 20 ? " Nobody around yet: keep waiting or play the robot." : ""}`}
           </p>
         </Modal>
       )}

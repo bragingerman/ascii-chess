@@ -2,7 +2,7 @@
 import type { Board, Color, Piece, Position } from "./rules"
 
 export type Settings = { fog: boolean; minutes: number } // minutes 0 = no clock
-export type Reason = "mate" | "stalemate" | "resign" | "timeout" | "agreed"
+export type Reason = "mate" | "stalemate" | "resign" | "timeout" | "agreed" | "abandoned"
 export type Result = { winner: Color | null; reason: Reason }
 
 export type ClientMsg =

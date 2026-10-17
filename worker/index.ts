@@ -10,6 +10,8 @@ interface Env {
 
 const CODE = /^[A-Z0-9]{4,8}$/
 const IDLE_MS = 24 * 60 * 60 * 1000
+// A player who stays disconnected this long while the opponent is still there loses the game.
+const ABANDON_MS = 3 * 60 * 1000
 
 // The game is served from https://germanbragin.com/ascii-chess/ (a route on that zone) and,
 // for convenience, from the workers.dev address. Everything under PREFIX is ours; on the
@@ -67,6 +69,8 @@ type Stored = {
   rematch: { white: boolean; black: boolean }
   result: Result | null
   touched: number
+  /** When each player lost their last connection (null while connected). Missing on rooms created before this field existed. */
+  away?: { white: number | null; black: number | null }
 }
 
 const other = (c: Color): Color => (c === "white" ? "black" : "white")
@@ -115,6 +119,7 @@ export class Room extends DurableObject<Env> {
       rematch: { white: false, black: false },
       result: null,
       touched: Date.now(),
+      away: { white: null, black: null },
     }
   }
 
@@ -214,6 +219,10 @@ export class Room extends DurableObject<Env> {
     // A reconnect replaces a stale socket of the same player.
     for (const w of this.ctx.getWebSockets()) if (w !== ws && this.colorOf(w) === color) w.close(1000, "replaced")
     ws.serializeAttachment({ token: msg.token })
+    s.away = { white: s.away?.white ?? null, black: s.away?.black ?? null }
+    s.away[color] = null
+    // If the opponent is gone too, their absence only starts to count now that someone is here to claim the win.
+    if (s.away[other(color)]) s.away[other(color)] = Date.now()
     await this.save()
   }
 
@@ -258,26 +267,53 @@ export class Room extends DurableObject<Env> {
       return this.ctx.storage.deleteAll()
     }
     if (s.phase === "playing" && this.clockOut(s, now)) return this.finish({ winner: other(s.turn), reason: "timeout" })
+    if (s.phase === "playing") {
+      for (const c of ["white", "black"] as const) {
+        if (this.abandonAt(s, c) <= now) return this.finish({ winner: other(c), reason: "abandoned" })
+      }
+    }
     await this.save()
+  }
+
+  /** Moment `c` forfeits by staying away; Infinity while they are connected or nobody is left to claim the win. */
+  private abandonAt(s: Stored, c: Color) {
+    const since = s.away?.[c]
+    return since && this.online(other(c)) ? since + ABANDON_MS : Infinity
+  }
+
+  private async dropped(ws: WebSocket) {
+    const s = this.s
+    let color: Color | null = null
+    try {
+      color = this.colorOf(ws)
+    } catch {}
+    // Only a player's last socket counts: a reconnect that replaced this one keeps them present.
+    if (s && color && !this.online(color, ws)) {
+      s.away = { white: s.away?.white ?? null, black: s.away?.black ?? null }
+      s.away[color] = Date.now()
+      return this.save(ws)
+    }
+    this.broadcast(ws)
   }
 
   async webSocketClose(ws: WebSocket) {
     ws.close()
-    this.broadcast(ws)
+    await this.dropped(ws)
   }
 
   async webSocketError(ws: WebSocket) {
-    this.broadcast(ws)
+    await this.dropped(ws)
   }
 
-  private async save() {
+  private async save(closing?: WebSocket) {
     const s = this.s!
     s.touched = Date.now()
     await this.ctx.storage.put("s", s)
     // One alarm serves both the flag-fall deadline and the idle clean-up.
     const flag = s.phase === "playing" && s.settings.minutes ? s.turnStartedAt + s.clocks[s.turn] : Infinity
-    await this.ctx.storage.setAlarm(Math.min(flag, s.touched + IDLE_MS) + 50)
-    this.broadcast()
+    const gone = s.phase === "playing" ? Math.min(this.abandonAt(s, "white"), this.abandonAt(s, "black")) : Infinity
+    await this.ctx.storage.setAlarm(Math.min(flag, gone, s.touched + IDLE_MS) + 50)
+    this.broadcast(closing)
   }
 
   private broadcast(closing?: WebSocket) {

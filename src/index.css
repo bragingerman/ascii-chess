@@ -1,24 +1,28 @@
 @import "tailwindcss";
 
+/* IBM Plex Mono (SIL OFL 1.1), self-hosted. */
 @font-face {
   font-family: "IBM Plex Mono:Bold";
-  src: url("https://static.figma.com/font/IBMPlexMono-Bold_3") format("woff2");
+  src: url("./fonts/ibm-plex-mono-bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono:Medium";
+  src: url("./fonts/ibm-plex-mono-medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
 }
 
 @font-face {
   font-family: "IBM Plex Mono:Regular";
-  src: url("https://static.figma.com/font/IBMPlexMono-Regular_2") format("woff2");
+  src: url("./fonts/ibm-plex-mono-regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-}
-
-@font-face {
-  font-family: "Inter:Regular";
-  src: url("https://static.figma.com/font/Inter_1") format("woff2");
-  font-style: normal;
-  font-weight: 400;
+  font-display: swap;
 }
 
 :root {
@@ -96,13 +100,6 @@ body {
 @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 .backdrop-in { animation: backdrop-in 0.2s ease-out both; }
 
-@font-face {
-  font-family: "IBM Plex Mono:Medium";
-  src: url("https://static.figma.com/font/IBMPlexMono-Medium_3") format("woff2");
-  font-style: normal;
-  font-weight: 500;
-}
-
 /* Modal backdrop: faded with a chunky pixel checker pattern */
 .pixel-backdrop {
   background-color: rgba(0, 0, 0, 0.72);
@@ -119,13 +116,6 @@ body {
   100% { transform: scale(1); }
 }
 .modal-pop { animation: modal-pop 0.25s steps(5) both; }
-
-@font-face {
-  font-family: "IBM Plex Mono:Light";
-  src: url("https://static.figma.com/font/IBMPlexMono-Light_3") format("woff2");
-  font-style: normal;
-  font-weight: 300;
-}
 
 /* Colour wave blowing through the "+" texture on capture (no scaling). */
 @property --blast {
