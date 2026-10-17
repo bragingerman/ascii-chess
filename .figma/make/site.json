@@ -1,0 +1,14 @@
+{
+  "title": "ASCII CHESS",
+  "description": "Play classic chess with a unique ASCII art interface that offers a nostalgic and text-based gaming experience for chess enthusiasts.",
+  "robots": {
+    "index": false
+  },
+  "openGraph": {
+    "image": "/.figma/make/social-image.png"
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
