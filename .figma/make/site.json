@@ -1,20 +1,20 @@
 {
-    "title":  "ASCII Chess: play chess online in ASCII art",
-    "description":  "Play chess drawn in ASCII art in your browser: vs Stockfish, a friend by link or a random opponent. Optional fog of war and clocks. Free.",
-    "robots":  {
-                   "index":  true
-               },
-    "openGraph":  {
-                      "image":  "https://germanbragin.com/ascii-chess/social-image.png"
-                  },
-    "accessibility":  {
-                          "addBypassLinks":  false,
-                          "ignoreReducedMotion":  false
-                      },
-    "customScripts":  {
-                          "headEnd":  "\u003clink rel=\"canonical\" href=\"https://germanbragin.com/ascii-chess/\"\u003e\n\u003cmeta property=\"og:url\" content=\"https://germanbragin.com/ascii-chess/\"\u003e\n\u003cmeta property=\"og:type\" content=\"website\"\u003e\n\u003cmeta property=\"og:site_name\" content=\"ASCII Chess\"\u003e\n\u003cmeta property=\"og:locale\" content=\"en_US\"\u003e\n\u003cmeta property=\"og:image:width\" content=\"1200\"\u003e\n\u003cmeta property=\"og:image:height\" content=\"630\"\u003e\n\u003cmeta property=\"og:image:alt\" content=\"ASCII Chess + fog of war: chess against the machine\"\u003e\n\u003cmeta name=\"twitter:title\" content=\"ASCII Chess: play chess online in ASCII art\"\u003e\n\u003cmeta name=\"twitter:description\" content=\"Play chess drawn in ASCII art in your browser: vs Stockfish, a friend by link or a random opponent. Optional fog of war and clocks. Free.\"\u003e\n\u003cmeta name=\"theme-color\" content=\"#000000\"\u003e\n\u003cscript type=\"application/ld+json\"\u003e{\"@context\": \"https://schema.org\", \"@type\": [\"WebApplication\", \"VideoGame\"], \"name\": \"ASCII Chess\", \"url\": \"https://germanbragin.com/ascii-chess/\", \"description\": \"Play chess drawn in ASCII art in your browser: vs Stockfish, a friend by link or a random opponent. Optional fog of war and clocks. Free.\", \"image\": \"https://germanbragin.com/ascii-chess/social-image.png\", \"applicationCategory\": \"GameApplication\", \"genre\": \"Board game\", \"operatingSystem\": \"Any (web browser)\", \"browserRequirements\": \"Requires JavaScript\", \"inLanguage\": \"en\", \"isAccessibleForFree\": true, \"playMode\": [\"SinglePlayer\", \"MultiPlayer\"], \"offers\": {\"@type\": \"Offer\", \"price\": \"0\", \"priceCurrency\": \"USD\"}}\u003c/script\u003e\n"
-                      },
-    "icons":  {
-                  "icon":  "/ascii-chess/favicon.svg"
-              }
+  "title": "ASCII Chess: play chess online in ASCII art",
+  "description": "Play chess drawn in ASCII art in your browser: vs Stockfish, a friend by link or a random opponent. Optional fog of war and clocks. Free.",
+  "robots": {
+    "index": true
+  },
+  "openGraph": {
+    "image": "https://germanbragin.com/ascii-chess/social-image.png"
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  },
+  "customScripts": {
+    "headEnd": "<link rel=\"canonical\" href=\"https://germanbragin.com/ascii-chess/\">\n<meta property=\"og:url\" content=\"https://germanbragin.com/ascii-chess/\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:site_name\" content=\"ASCII Chess\">\n<meta property=\"og:locale\" content=\"en_US\">\n<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n<meta property=\"og:image:alt\" content=\"ASCII Chess + fog of war: chess against the machine\">\n<meta name=\"twitter:title\" content=\"ASCII Chess: play chess online in ASCII art\">\n<meta name=\"twitter:description\" content=\"Play chess drawn in ASCII art in your browser: vs Stockfish, a friend by link or a random opponent. Optional fog of war and clocks. Free.\">\n<meta name=\"theme-color\" content=\"#000000\">\n<script type=\"application/ld+json\">{\"@context\": \"https://schema.org\", \"@type\": [\"WebApplication\", \"VideoGame\"], \"name\": \"ASCII Chess\", \"url\": \"https://germanbragin.com/ascii-chess/\", \"description\": \"Play chess drawn in ASCII art in your browser: vs Stockfish, a friend by link or a random opponent. Optional fog of war and clocks. Free.\", \"image\": \"https://germanbragin.com/ascii-chess/social-image.png\", \"applicationCategory\": \"GameApplication\", \"genre\": \"Board game\", \"operatingSystem\": \"Any (web browser)\", \"browserRequirements\": \"Requires JavaScript\", \"inLanguage\": \"en\", \"isAccessibleForFree\": true, \"playMode\": [\"SinglePlayer\", \"MultiPlayer\"], \"offers\": {\"@type\": \"Offer\", \"price\": \"0\", \"priceCurrency\": \"USD\"}}</script>\n"
+  },
+  "icons": {
+    "icon": "/ascii-chess/favicon.svg"
+  }
 }
