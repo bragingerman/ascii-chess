@@ -1,5 +1,11 @@
 # ASCII Chess
 
+<p align="center">
+  <a href="https://germanbragin.com/ascii-chess/">
+    <img src=".figma/make/social-image.png" alt="ASCII Chess + fog of war: chess against the machine" width="720">
+  </a>
+</p>
+
 **Chess drawn in ASCII art, playable in the browser.** Play against a Stockfish-powered robot, challenge a friend with a link, or get matched with a random opponent online. Real-time multiplayer runs on Cloudflare Workers + Durable Objects, no server to maintain.
 
 **Play: https://germanbragin.com/ascii-chess/**
